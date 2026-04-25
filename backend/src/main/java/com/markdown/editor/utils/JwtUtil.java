@@ -43,6 +43,15 @@ public class JwtUtil {
     }
     
     public Claims getClaimsFromToken(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            throw new IllegalArgumentException("Token cannot be null or empty");
+        }
+        
+        String[] parts = token.split("\\.");
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid JWT token format");
+        }
+        
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
@@ -66,5 +75,13 @@ public class JwtUtil {
     public Boolean validateToken(String token, String subject) {
         String tokenSubject = getSubjectFromToken(token);
         return (tokenSubject.equals(subject) && !isTokenExpired(token));
+    }
+    
+    public Boolean isValidTokenFormat(String token) {
+        if (token == null || token.trim().isEmpty()) {
+            return false;
+        }
+        String[] parts = token.split("\\.");
+        return parts.length == 3;
     }
 }

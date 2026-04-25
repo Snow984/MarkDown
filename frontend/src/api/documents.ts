@@ -1,5 +1,6 @@
 import api from './request'
 import type { Document, DocumentContent, DocumentVersion } from '../types'
+import type { ApiResponse } from './auth'
 
 export interface CreateDocumentRequest {
   title: string
@@ -14,48 +15,48 @@ export interface UpdateDocumentRequest {
 
 export const documentsApi = {
   getDocuments: async (folderId?: number | null): Promise<Document[]> => {
-    const response = await api.get<Document[]>('/documents', {
+    const response = await api.get<ApiResponse<Document[]>>('/documents', {
       params: folderId !== undefined ? { folderId } : {},
     })
-    return response.data
+    return response.data.data
   },
 
   getDocument: async (id: number): Promise<Document> => {
-    const response = await api.get<Document>(`/documents/${id}`)
-    return response.data
+    const response = await api.get<ApiResponse<Document>>(`/documents/${id}`)
+    return response.data.data
   },
 
   getDocumentContent: async (id: number): Promise<DocumentContent> => {
-    const response = await api.get<DocumentContent>(`/documents/${id}/content`)
-    return response.data
+    const response = await api.get<ApiResponse<DocumentContent>>(`/documents/${id}/content`)
+    return response.data.data
   },
 
   createDocument: async (data: CreateDocumentRequest): Promise<Document> => {
-    const response = await api.post<Document>('/documents', data)
-    return response.data
+    const response = await api.post<ApiResponse<Document>>('/documents', data)
+    return response.data.data
   },
 
   updateDocument: async (id: number, data: UpdateDocumentRequest): Promise<Document> => {
-    const response = await api.patch<Document>(`/documents/${id}`, data)
-    return response.data
+    const response = await api.patch<ApiResponse<Document>>(`/documents/${id}`, data)
+    return response.data.data
   },
 
   saveDocumentContent: async (id: number, content: string): Promise<DocumentContent> => {
-    const response = await api.put<DocumentContent>(`/documents/${id}/content`, { content })
-    return response.data
+    const response = await api.put<ApiResponse<DocumentContent>>(`/documents/${id}/content`, { content })
+    return response.data.data
   },
 
   deleteDocument: async (id: number): Promise<void> => {
-    await api.delete(`/documents/${id}`)
+    await api.delete<ApiResponse<void>>(`/documents/${id}`)
   },
 
   getDocumentVersions: async (id: number): Promise<DocumentVersion[]> => {
-    const response = await api.get<DocumentVersion[]>(`/documents/${id}/versions`)
-    return response.data
+    const response = await api.get<ApiResponse<DocumentVersion[]>>(`/documents/${id}/versions`)
+    return response.data.data
   },
 
   restoreDocumentVersion: async (id: number, versionId: number): Promise<DocumentContent> => {
-    const response = await api.post<DocumentContent>(`/documents/${id}/versions/${versionId}/restore`)
-    return response.data
+    const response = await api.post<ApiResponse<DocumentContent>>(`/documents/${id}/versions/${versionId}/restore`)
+    return response.data.data
   },
 }

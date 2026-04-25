@@ -22,10 +22,14 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: { username: string; password: string }, { rejectWithValue }) => {
     try {
+      localStorage.removeItem('token')
       const response = await authApi.login(credentials)
-      localStorage.setItem('token', response.token)
+      if (response.token) {
+        localStorage.setItem('token', response.token)
+      }
       return response
     } catch (error: any) {
+      localStorage.removeItem('token')
       return rejectWithValue(error.response?.data?.message || '登录失败')
     }
   }
@@ -35,10 +39,14 @@ export const register = createAsyncThunk(
   'auth/register',
   async (data: { username: string; email: string; password: string }, { rejectWithValue }) => {
     try {
+      localStorage.removeItem('token')
       const response = await authApi.register(data)
-      localStorage.setItem('token', response.token)
+      if (response.token) {
+        localStorage.setItem('token', response.token)
+      }
       return response
     } catch (error: any) {
+      localStorage.removeItem('token')
       return rejectWithValue(error.response?.data?.message || '注册失败')
     }
   }
@@ -57,9 +65,18 @@ export const fetchCurrentUser = createAsyncThunk(
 )
 
 export const logout = createAsyncThunk('auth/logout', async () => {
-  await authApi.logout()
+  try {
+    await authApi.logout()
+  } catch (error) {
+    console.debug('Logout API call failed, but cleaning localStorage anyway')
+  }
   localStorage.removeItem('token')
 })
+
+export const clearLocalStorage = () => {
+  localStorage.removeItem('token')
+  localStorage.clear()
+}
 
 const authSlice = createSlice({
   name: 'auth',

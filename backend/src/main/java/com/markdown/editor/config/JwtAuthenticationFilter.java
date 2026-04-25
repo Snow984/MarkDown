@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             
-            if (token != null && !token.trim().isEmpty()) {
+            if (jwtUtil.isValidTokenFormat(token)) {
                 try {
                     String username = jwtUtil.getSubjectFromToken(token);
                     
@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         }
                     }
                 } catch (Exception e) {
-                    logger.error("JWT Token validation failed", e);
+                    logger.debug("JWT Token validation failed - skipping authentication", e);
                 }
             }
         }
