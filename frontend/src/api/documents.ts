@@ -58,5 +58,5 @@ export const documentsApi = {
   restoreDocumentVersion: async (id: number, versionId: number): Promise<DocumentContent> => {
     const response = await api.post<ApiResponse<DocumentContent>>(`/api/documents/${id}/versions/${versionId}/restore`)
     return response.data.data
-  },
-}
+  }
+};

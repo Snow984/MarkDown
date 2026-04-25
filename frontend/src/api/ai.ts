@@ -24,5 +24,5 @@ export const aiApi = {
   summarizeContent: async (data: AIAssistRequest): Promise<AIAssistResponse> => {
     const response = await api.post<ApiResponse<string>>('/api/ai/summarize', data)
     return { suggestion: response.data.data }
-  },
-}
+  }
+};

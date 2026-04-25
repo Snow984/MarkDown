@@ -37,5 +37,5 @@ export const foldersApi = {
 
   deleteFolder: async (id: number): Promise<void> => {
     await api.delete<ApiResponse<void>>(`/api/folders/${id}`)
-  },
-}
+  }
+};

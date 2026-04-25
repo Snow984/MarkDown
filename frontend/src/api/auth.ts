@@ -50,5 +50,5 @@ export const authApi = {
 
   changePassword: async (data: { oldPassword: string; newPassword: string }): Promise<void> => {
     await api.post<ApiResponse<void>>('/api/auth/change-password', data)
-  },
-}
+  }
+};

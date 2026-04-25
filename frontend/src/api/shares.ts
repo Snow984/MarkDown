@@ -26,5 +26,5 @@ export const sharesApi = {
   getSharedDocument: async (token: string): Promise<{ document: Document; content: DocumentContent; canEdit: boolean }> => {
     const response = await api.get<ApiResponse<{ document: Document; content: DocumentContent; canEdit: boolean }>>(`/api/shares/${token}`)
     return response.data.data
-  },
-}
+  }
+};
