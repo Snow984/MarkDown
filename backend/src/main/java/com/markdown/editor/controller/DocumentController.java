@@ -9,6 +9,7 @@ import com.markdown.editor.dto.DocumentVersionDTO;
 import com.markdown.editor.dto.SaveDraftRequest;
 import com.markdown.editor.dto.ShareLinkDTO;
 import com.markdown.editor.dto.UpdateDocumentRequest;
+import com.markdown.editor.service.DocumentContentService;
 import com.markdown.editor.service.DocumentDraftService;
 import com.markdown.editor.service.DocumentService;
 import com.markdown.editor.service.DocumentVersionService;
@@ -27,17 +28,20 @@ public class DocumentController {
     private final DocumentVersionService documentVersionService;
     private final ShareLinkService shareLinkService;
     private final DocumentDraftService documentDraftService;
+    private final DocumentContentService documentContentService;
     private final SecurityUtil securityUtil;
     
     public DocumentController(DocumentService documentService,
                             DocumentVersionService documentVersionService,
                             ShareLinkService shareLinkService,
                             DocumentDraftService documentDraftService,
+                            DocumentContentService documentContentService,
                             SecurityUtil securityUtil) {
         this.documentService = documentService;
         this.documentVersionService = documentVersionService;
         this.shareLinkService = shareLinkService;
         this.documentDraftService = documentDraftService;
+        this.documentContentService = documentContentService;
         this.securityUtil = securityUtil;
     }
     
