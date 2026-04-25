@@ -5,13 +5,13 @@
 ### 1.1 后端技术栈
 - **语言**: Java 17+
 - **框架**: Spring Boot 3.0+
-- **ORM**: JPA / MyBatis-Plus
-- **数据库**: PostgreSQL (支持JSON类型，适合存储Markdown内容和元数据)
+- **ORM**: MyBatis-Plus
+- **数据库**: MySQL (支持Docker部署)
 - **缓存**: Redis (用于会话管理、实时协作状态)
 - **消息队列**: Kafka (用于实时协作消息传递)
 - **认证**: JWT + OAuth2 (支持第三方登录)
 - **文件存储**: MinIO / AWS S3 (存储图片和附件)
-- **AI集成**: OpenAI API / 国内AI服务API
+- **AI集成**: 本地Ollama部署的Qwen3.5大模型
 
 ### 1.2 前端技术栈
 - **框架**: React 18 + TypeScript
@@ -125,7 +125,7 @@ sequenceDiagram
   - 摘要生成
   - 内容建议
 - **技术实现**:
-  - AI API集成
+  - 本地Ollama部署的Qwen3.5大模型集成
   - 异步任务处理
   - 结果缓存
 
@@ -154,67 +154,67 @@ sequenceDiagram
 #### users表
 | 字段名 | 数据类型 | 描述 |
 | :--- | :--- | :--- |
-| id | UUID | 用户ID |
+| id | VARCHAR(36) | 用户ID (UUID) |
 | username | VARCHAR(255) | 用户名 |
 | email | VARCHAR(255) | 邮箱 |
 | password_hash | VARCHAR(255) | 密码哈希 |
 | avatar | VARCHAR(255) | 头像URL |
-| created_at | TIMESTAMP | 创建时间 |
-| updated_at | TIMESTAMP | 更新时间 |
+| created_at | DATETIME | 创建时间 |
+| updated_at | DATETIME | 更新时间 |
 
 #### documents表
 | 字段名 | 数据类型 | 描述 |
 | :--- | :--- | :--- |
-| id | UUID | 文档ID |
+| id | VARCHAR(36) | 文档ID (UUID) |
 | title | VARCHAR(255) | 文档标题 |
-| user_id | UUID | 创建者ID |
-| folder_id | UUID | 文件夹ID |
-| is_public | BOOLEAN | 是否公开 |
-| created_at | TIMESTAMP | 创建时间 |
-| updated_at | TIMESTAMP | 更新时间 |
-| last_edited_by | UUID | 最后编辑者ID |
-| last_edited_at | TIMESTAMP | 最后编辑时间 |
+| user_id | VARCHAR(36) | 创建者ID |
+| folder_id | VARCHAR(36) | 文件夹ID |
+| is_public | TINYINT(1) | 是否公开 |
+| created_at | DATETIME | 创建时间 |
+| updated_at | DATETIME | 更新时间 |
+| last_edited_by | VARCHAR(36) | 最后编辑者ID |
+| last_edited_at | DATETIME | 最后编辑时间 |
 
 #### document_contents表
 | 字段名 | 数据类型 | 描述 |
 | :--- | :--- | :--- |
-| id | UUID | 内容ID |
-| document_id | UUID | 文档ID |
+| id | VARCHAR(36) | 内容ID (UUID) |
+| document_id | VARCHAR(36) | 文档ID |
 | content | TEXT | Markdown内容 |
-| version | INTEGER | 版本号 |
-| created_at | TIMESTAMP | 创建时间 |
-| created_by | UUID | 创建者ID |
+| version | INT | 版本号 |
+| created_at | DATETIME | 创建时间 |
+| created_by | VARCHAR(36) | 创建者ID |
 
 #### folders表
 | 字段名 | 数据类型 | 描述 |
 | :--- | :--- | :--- |
-| id | UUID | 文件夹ID |
+| id | VARCHAR(36) | 文件夹ID (UUID) |
 | name | VARCHAR(255) | 文件夹名称 |
-| parent_id | UUID | 父文件夹ID |
-| user_id | UUID | 创建者ID |
-| created_at | TIMESTAMP | 创建时间 |
-| updated_at | TIMESTAMP | 更新时间 |
+| parent_id | VARCHAR(36) | 父文件夹ID |
+| user_id | VARCHAR(36) | 创建者ID |
+| created_at | DATETIME | 创建时间 |
+| updated_at | DATETIME | 更新时间 |
 
 #### document_versions表
 | 字段名 | 数据类型 | 描述 |
 | :--- | :--- | :--- |
-| id | UUID | 版本ID |
-| document_id | UUID | 文档ID |
+| id | VARCHAR(36) | 版本ID (UUID) |
+| document_id | VARCHAR(36) | 文档ID |
 | content | TEXT | 版本内容 |
-| version_number | INTEGER | 版本号 |
-| created_at | TIMESTAMP | 创建时间 |
-| created_by | UUID | 创建者ID |
+| version_number | INT | 版本号 |
+| created_at | DATETIME | 创建时间 |
+| created_by | VARCHAR(36) | 创建者ID |
 | comment | VARCHAR(255) | 版本注释 |
 
 #### share_links表
 | 字段名 | 数据类型 | 描述 |
 | :--- | :--- | :--- |
-| id | UUID | 分享链接ID |
-| document_id | UUID | 文档ID |
+| id | VARCHAR(36) | 分享链接ID (UUID) |
+| document_id | VARCHAR(36) | 文档ID |
 | token | VARCHAR(255) | 分享令牌 |
 | permission | VARCHAR(50) | 权限类型 |
-| expires_at | TIMESTAMP | 过期时间 |
-| created_at | TIMESTAMP | 创建时间 |
+| expires_at | DATETIME | 过期时间 |
+| created_at | DATETIME | 创建时间 |
 
 ## 5. 接口设计
 
@@ -267,17 +267,25 @@ sequenceDiagram
 
 ### 6.1 容器化部署
 - **Docker容器**: 每个服务独立容器
-- **Docker Compose**: 本地开发环境
+- **Docker Compose**: 本地开发环境，支持Win11系统
 - **Kubernetes**: 生产环境编排
+- **Docker配置**: 提供Dockerfile和docker-compose.yml文件，确保在Win11系统上正常运行
 
-### 6.2 云服务部署
+### 6.2 本地开发环境
+- **Win11 + Docker Desktop**: 本地开发和测试
+- **MySQL容器**: 使用官方MySQL镜像
+- **Redis容器**: 使用官方Redis镜像
+- **Kafka容器**: 使用Confluent Kafka镜像
+- **Ollama容器**: 部署Qwen3.5大模型
+
+### 6.3 云服务部署
 - **计算服务**: AWS EC2 / Alibaba Cloud ECS
 - **数据库服务**: AWS RDS / Alibaba Cloud RDS
 - **存储服务**: AWS S3 / Alibaba Cloud OSS
 - **缓存服务**: AWS ElastiCache / Alibaba Cloud Redis
 - **消息队列**: AWS SQS / Alibaba Cloud MQ
 
-### 6.3 CI/CD流程
+### 6.4 CI/CD流程
 - **代码仓库**: GitHub / GitLab
 - **CI工具**: Jenkins / GitHub Actions
 - **部署环境**: 开发、测试、预发布、生产
@@ -347,12 +355,13 @@ sequenceDiagram
 
 ### 11.1 技术风险
 - **实时协作冲突**: 多人同时编辑导致的冲突
-- **AI服务依赖**: 外部AI服务不稳定
+- **AI服务依赖**: 本地Ollama部署的资源占用和稳定性
 - **存储成本**: 大量文件存储的成本
 - **性能瓶颈**: 高并发下的性能问题
 
 ### 11.2 应对策略
 - **CRDT算法**: 解决协作冲突
-- **服务降级**: AI服务不可用时的降级方案
+- **服务降级**: Ollama服务不可用时的降级方案
+- **资源优化**: 合理配置Ollama资源使用
 - **存储优化**: 压缩存储、过期清理
 - **性能测试**: 定期性能测试与优化

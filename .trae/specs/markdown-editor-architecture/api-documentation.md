@@ -537,6 +537,25 @@
     }
     ```
 
+### 7.4 Ollama模型管理
+- **URL**: `/api/ai/models`
+- **方法**: `GET`
+- **请求头**:
+  - `Authorization: Bearer {token}`
+- **响应**:
+  - 成功 (200):
+    ```json
+    {
+      "models": [
+        {
+          "name": "qwen3.5",
+          "status": "active",
+          "version": "1.0"
+        }
+      ]
+    }
+    ```
+
 ## 8. 存储接口
 
 ### 8.1 上传文件

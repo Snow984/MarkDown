@@ -17,9 +17,9 @@
 - **优先级**: P0
 - **依赖**: 任务1
 - **描述**: 
-  - 创建PostgreSQL数据库
+  - 创建MySQL数据库
   - 实现数据库表结构
-  - 配置JPA/MyBatis-Plus
+  - 配置MyBatis-Plus
 - **验收标准**: 数据库表结构创建完成，ORM配置正确
 - **测试要求**:
   - `programmatic` TR-2.1: 数据库连接成功
@@ -74,7 +74,7 @@
 - **优先级**: P1
 - **依赖**: 任务4
 - **描述**: 
-  - AI API集成
+  - 本地Ollama部署的Qwen3.5大模型集成
   - 文章润色功能
   - 摘要生成功能
   - 内容建议功能
@@ -143,3 +143,18 @@
   - `programmatic` TR-10.3: AI辅助功能前端测试通过
   - `human-judgement` TR-10.4: 响应式设计测试通过
 - **备注**: 实现离线编辑功能
+
+## [ ] 任务11: Docker配置与部署
+- **优先级**: P1
+- **依赖**: 任务1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+- **描述**: 
+  - 创建Dockerfile文件
+  - 配置docker-compose.yml
+  - 测试Docker部署
+  - 确保在Win11系统上正常运行
+- **验收标准**: 系统可以在Win11系统的Docker上正常运行
+- **测试要求**:
+  - `programmatic` TR-11.1: Docker容器构建成功
+  - `programmatic` TR-11.2: 所有服务启动正常
+  - `programmatic` TR-11.3: 系统功能测试通过
+- **备注**: 配置Ollama容器部署Qwen3.5大模型
