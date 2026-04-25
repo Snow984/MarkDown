@@ -25,30 +25,30 @@ export interface ApiResponse<T> {
 
 export const authApi = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {
-    const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', data)
+    const response = await api.post<ApiResponse<AuthResponse>>('/api/auth/login', data)
     return response.data.data
   },
 
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
-    const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', data)
+    const response = await api.post<ApiResponse<AuthResponse>>('/api/auth/register', data)
     return response.data.data
   },
 
   getMe: async (): Promise<User> => {
-    const response = await api.get<ApiResponse<User>>('/auth/me')
+    const response = await api.get<ApiResponse<User>>('/api/auth/me')
     return response.data.data
   },
 
   logout: async (): Promise<void> => {
-    await api.post<ApiResponse<void>>('/auth/logout')
+    await api.post<ApiResponse<void>>('/api/auth/logout')
   },
 
   updateProfile: async (data: Partial<{ username: string; email: string }>): Promise<User> => {
-    const response = await api.patch<ApiResponse<User>>('/auth/profile', data)
+    const response = await api.patch<ApiResponse<User>>('/api/auth/profile', data)
     return response.data.data
   },
 
   changePassword: async (data: { oldPassword: string; newPassword: string }): Promise<void> => {
-    await api.post<ApiResponse<void>>('/auth/change-password', data)
+    await api.post<ApiResponse<void>>('/api/auth/change-password', data)
   },
 }

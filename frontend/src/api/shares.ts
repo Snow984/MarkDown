@@ -10,21 +10,21 @@ export interface CreateShareLinkRequest {
 
 export const sharesApi = {
   getShareLinks: async (documentId: number): Promise<ShareLink[]> => {
-    const response = await api.get<ApiResponse<ShareLink[]>>(`/documents/${documentId}/shares`)
+    const response = await api.get<ApiResponse<ShareLink[]>>(`/api/documents/${documentId}/shares`)
     return response.data.data
   },
 
   createShareLink: async (data: CreateShareLinkRequest): Promise<ShareLink> => {
-    const response = await api.post<ApiResponse<ShareLink>>('/shares', data)
+    const response = await api.post<ApiResponse<ShareLink>>('/api/shares', data)
     return response.data.data
   },
 
   deleteShareLink: async (id: number): Promise<void> => {
-    await api.delete<ApiResponse<void>>(`/shares/${id}`)
+    await api.delete<ApiResponse<void>>(`/api/shares/${id}`)
   },
 
   getSharedDocument: async (token: string): Promise<{ document: Document; content: DocumentContent; canEdit: boolean }> => {
-    const response = await api.get<ApiResponse<{ document: Document; content: DocumentContent; canEdit: boolean }>>(`/shares/${token}`)
+    const response = await api.get<ApiResponse<{ document: Document; content: DocumentContent; canEdit: boolean }>>(`/api/shares/${token}`)
     return response.data.data
   },
 }
