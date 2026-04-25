@@ -1,4 +1,5 @@
 import api from './request'
+import type { ApiResponse } from './auth'
 
 export interface AIAssistRequest {
   prompt: string
@@ -11,17 +12,17 @@ export interface AIAssistResponse {
 
 export const aiApi = {
   generateContent: async (data: AIAssistRequest): Promise<AIAssistResponse> => {
-    const response = await api.post<AIAssistResponse>('/ai/generate', data)
-    return response.data
+    const response = await api.post<ApiResponse<string>>('/ai/generate', data)
+    return { suggestion: response.data.data }
   },
 
   improveContent: async (data: AIAssistRequest): Promise<AIAssistResponse> => {
-    const response = await api.post<AIAssistResponse>('/ai/improve', data)
-    return response.data
+    const response = await api.post<ApiResponse<string>>('/ai/improve', data)
+    return { suggestion: response.data.data }
   },
 
   summarizeContent: async (data: AIAssistRequest): Promise<AIAssistResponse> => {
-    const response = await api.post<AIAssistResponse>('/ai/summarize', data)
-    return response.data
+    const response = await api.post<ApiResponse<string>>('/ai/summarize', data)
+    return { suggestion: response.data.data }
   },
 }
