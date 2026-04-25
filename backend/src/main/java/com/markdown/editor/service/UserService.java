@@ -42,7 +42,7 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setNickname(request.getNickname() != null ? request.getNickname() : request.getUsername());
+        user.setNickname(request.getNickname() != null && !request.getNickname().isEmpty() ? request.getNickname() : request.getUsername());
         user.setStatus(1);
         
         userRepository.insert(user);
