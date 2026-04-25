@@ -5,7 +5,7 @@ import com.markdown.editor.service.AIService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/ai")
+@RequestMapping("/ai")
 public class AIController {
     
     private final AIService aiService;
