@@ -47,3 +47,7 @@ export interface ShareLink {
   canEdit: boolean
   createdAt: string
 }
+
+export interface AIAssistResponse {
+  suggestion: string
+}

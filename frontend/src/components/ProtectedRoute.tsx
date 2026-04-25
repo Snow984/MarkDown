@@ -11,13 +11,13 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const dispatch = useAppDispatch()
-  const { isAuthenticated, loading, token } = useAppSelector((state) => state.auth)
+  const { isAuthenticated, loading, token, user } = useAppSelector((state) => state.auth)
 
   useEffect(() => {
-    if (token && !isAuthenticated) {
+    if (token && (!isAuthenticated || !user)) {
       dispatch(fetchCurrentUser())
     }
-  }, [token, isAuthenticated, dispatch])
+  }, [token, isAuthenticated, user, dispatch])
 
   if (loading) {
     return (

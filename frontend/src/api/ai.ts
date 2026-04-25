@@ -1,28 +1,24 @@
-import api from './request'
-import type { ApiResponse } from './auth'
+import type { AIAssistResponse } from '../types'
+import { mockAIResponse } from './mockData'
 
 export interface AIAssistRequest {
   prompt: string
   context?: string
 }
 
-export interface AIAssistResponse {
-  suggestion: string
-}
-
 export const aiApi = {
-  generateContent: async (data: AIAssistRequest): Promise<AIAssistResponse> => {
-    const response = await api.post<ApiResponse<string>>('/api/ai/generate', data)
-    return { suggestion: response.data.data }
+  generateContent: async (_data: AIAssistRequest): Promise<AIAssistResponse> => {
+    // 模拟AI生成内容
+    return mockAIResponse
   },
 
-  improveContent: async (data: AIAssistRequest): Promise<AIAssistResponse> => {
-    const response = await api.post<ApiResponse<string>>('/api/ai/improve', data)
-    return { suggestion: response.data.data }
+  improveContent: async (_data: AIAssistRequest): Promise<AIAssistResponse> => {
+    // 模拟AI改进内容
+    return mockAIResponse
   },
 
-  summarizeContent: async (data: AIAssistRequest): Promise<AIAssistResponse> => {
-    const response = await api.post<ApiResponse<string>>('/api/ai/summarize', data)
-    return { suggestion: response.data.data }
-  }
+  summarizeContent: async (_data: AIAssistRequest): Promise<AIAssistResponse> => {
+    // 模拟AI总结内容
+    return mockAIResponse
+  },
 };

@@ -1,6 +1,5 @@
-import api from './request'
 import type { Document, DocumentContent, DocumentVersion } from '../types'
-import type { ApiResponse } from './auth'
+import { mockDocuments, mockDocumentContents, mockDocumentVersions } from './mockData'
 
 export interface CreateDocumentRequest {
   title: string
@@ -15,48 +14,107 @@ export interface UpdateDocumentRequest {
 
 export const documentsApi = {
   getDocuments: async (folderId?: number | null): Promise<Document[]> => {
-    const response = await api.get<ApiResponse<Document[]>>('/api/documents', {
-      params: folderId !== undefined ? { folderId } : {},
-    })
-    return response.data.data
+    // 模拟获取文档列表
+    if (folderId !== undefined) {
+      return mockDocuments.filter(doc => doc.folderId === folderId)
+    }
+    return mockDocuments
   },
 
   getDocument: async (id: number): Promise<Document> => {
-    const response = await api.get<ApiResponse<Document>>(`/api/documents/${id}`)
-    return response.data.data
+    // 模拟获取单个文档
+    const document = mockDocuments.find(doc => doc.id === id)
+    if (!document) {
+      throw new Error('文档不存在')
+    }
+    return document
   },
 
   getDocumentContent: async (id: number): Promise<DocumentContent> => {
-    const response = await api.get<ApiResponse<DocumentContent>>(`/api/documents/${id}/content`)
-    return response.data.data
+    // 模拟获取文档内容
+    const content = mockDocumentContents[id]
+    if (!content) {
+      throw new Error('文档内容不存在')
+    }
+    return content
   },
 
   createDocument: async (data: CreateDocumentRequest): Promise<Document> => {
-    const response = await api.post<ApiResponse<Document>>('/api/documents', data)
-    return response.data.data
+    // 模拟创建文档
+    const newDocument: Document = {
+      id: mockDocuments.length + 1,
+      title: data.title,
+      folderId: data.folderId || null,
+      userId: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+    mockDocuments.push(newDocument)
+    return newDocument
   },
 
   updateDocument: async (id: number, data: UpdateDocumentRequest): Promise<Document> => {
-    const response = await api.patch<ApiResponse<Document>>(`/api/documents/${id}`, data)
-    return response.data.data
+    // 模拟更新文档
+    const document = mockDocuments.find(doc => doc.id === id)
+    if (!document) {
+      throw new Error('文档不存在')
+    }
+    if (data.title) {
+      document.title = data.title
+    }
+    if (data.folderId !== undefined) {
+      document.folderId = data.folderId
+    }
+    document.updatedAt = new Date().toISOString()
+    return document
   },
 
   saveDocumentContent: async (id: number, content: string): Promise<DocumentContent> => {
-    const response = await api.put<ApiResponse<DocumentContent>>(`/api/documents/${id}/content`, { content })
-    return response.data.data
+    // 模拟保存文档内容
+    const existingContent = mockDocumentContents[id]
+    if (existingContent) {
+      existingContent.content = content
+      return existingContent
+    } else {
+      const newContent: DocumentContent = {
+        id: Object.keys(mockDocumentContents).length + 1,
+        documentId: id,
+        content,
+        createdAt: new Date().toISOString()
+      }
+      mockDocumentContents[id] = newContent
+      return newContent
+    }
   },
 
   deleteDocument: async (id: number): Promise<void> => {
-    await api.delete<ApiResponse<void>>(`/api/documents/${id}`)
+    // 模拟删除文档
+    const index = mockDocuments.findIndex(doc => doc.id === id)
+    if (index !== -1) {
+      mockDocuments.splice(index, 1)
+    }
   },
 
   getDocumentVersions: async (id: number): Promise<DocumentVersion[]> => {
-    const response = await api.get<ApiResponse<DocumentVersion[]>>(`/api/documents/${id}/versions`)
-    return response.data.data
+    // 模拟获取文档版本
+    return mockDocumentVersions[id] || []
   },
 
   restoreDocumentVersion: async (id: number, versionId: number): Promise<DocumentContent> => {
-    const response = await api.post<ApiResponse<DocumentContent>>(`/api/documents/${id}/versions/${versionId}/restore`)
-    return response.data.data
+    // 模拟恢复文档版本
+    const versions = mockDocumentVersions[id]
+    if (!versions) {
+      throw new Error('版本不存在')
+    }
+    const version = versions.find(v => v.id === versionId)
+    if (!version) {
+      throw new Error('版本不存在')
+    }
+    return {
+      id: mockDocumentContents[id]?.id || Object.keys(mockDocumentContents).length + 1,
+      documentId: id,
+      content: version.content,
+      createdAt: new Date().toISOString()
+    }
   }
 };

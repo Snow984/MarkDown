@@ -1,5 +1,5 @@
-import api from './request'
 import type { User } from '../types'
+import { mockUser } from './mockData'
 
 export interface LoginRequest {
   username: string
@@ -25,31 +25,46 @@ export interface ApiResponse<T> {
 }
 
 export const authApi = {
-  login: async (data: LoginRequest): Promise<AuthResponse> => {
-    const response = await api.post<ApiResponse<AuthResponse>>('/api/auth/login', data)
-    return response.data.data
+  login: async (_data: LoginRequest): Promise<AuthResponse> => {
+    // 模拟登录成功
+    return {
+      token: 'mock-token-123',
+      user: mockUser
+    }
   },
 
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
-    const response = await api.post<ApiResponse<AuthResponse>>('/api/auth/register', data)
-    return response.data.data
+    // 模拟注册成功
+    return {
+      token: 'mock-token-123',
+      user: {
+        ...mockUser,
+        username: data.username,
+        email: data.email
+      }
+    }
   },
 
   getMe: async (): Promise<User> => {
-    const response = await api.get<ApiResponse<User>>('/api/auth/me')
-    return response.data.data
+    // 模拟获取当前用户信息
+    return mockUser
   },
 
   logout: async (): Promise<void> => {
-    await api.post<ApiResponse<void>>('/api/auth/logout')
+    // 模拟登出
+    return Promise.resolve()
   },
 
   updateProfile: async (data: Partial<{ username: string; email: string }>): Promise<User> => {
-    const response = await api.patch<ApiResponse<User>>('/api/auth/profile', data)
-    return response.data.data
+    // 模拟更新个人信息
+    return {
+      ...mockUser,
+      ...data
+    }
   },
 
-  changePassword: async (data: { oldPassword: string; newPassword: string }): Promise<void> => {
-    await api.post<ApiResponse<void>>('/api/auth/change-password', data)
+  changePassword: async (_data: { oldPassword: string; newPassword: string }): Promise<void> => {
+    // 模拟修改密码
+    return Promise.resolve()
   }
 };

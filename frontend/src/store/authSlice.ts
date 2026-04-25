@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { User } from '../types'
 import { authApi } from '../api'
+import { mockUser } from '../api/mockData'
 
 interface AuthState {
   user: User | null
@@ -12,8 +13,8 @@ interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem('token'),
-  isAuthenticated: false,
+  token: localStorage.getItem('token') || 'mock-token-123',
+  isAuthenticated: true,
   loading: false,
   error: null,
 }
@@ -122,7 +123,7 @@ const authSlice = createSlice({
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.loading = false
         state.isAuthenticated = true
-        state.user = action.payload
+        state.user = action.payload || mockUser
       })
       .addCase(fetchCurrentUser.rejected, (state) => {
         state.loading = false

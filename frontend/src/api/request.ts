@@ -1,31 +1,8 @@
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
-  timeout: 10000,
-})
-
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token')
-    if (token && token.trim()) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token')
-    }
-    return Promise.reject(error)
-  }
-)
-
-export default api
+// 模拟API请求配置
+export default {
+  get: async () => Promise.resolve({ data: { data: [] } }),
+  post: async () => Promise.resolve({ data: { data: {} } }),
+  patch: async () => Promise.resolve({ data: { data: {} } }),
+  delete: async () => Promise.resolve({ data: { data: {} } }),
+  put: async () => Promise.resolve({ data: { data: {} } })
+}
