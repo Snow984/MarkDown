@@ -11,6 +11,12 @@ spring:
     username: root
     password: root
   
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+  
   flyway:
     enabled: true
     encoding: UTF-8
