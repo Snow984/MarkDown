@@ -33,24 +33,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
             
-            try {
-                String username = jwtUtil.getSubjectFromToken(token);
-                
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    if (!jwtUtil.isTokenExpired(token)) {
-                        UsernamePasswordAuthenticationToken authentication = 
-                            new UsernamePasswordAuthenticationToken(
-                                username, 
-                                null, 
-                                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
-                            );
-                        
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (token != null && !token.trim().isEmpty()) {
+                try {
+                    String username = jwtUtil.getSubjectFromToken(token);
+                    
+                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        if (!jwtUtil.isTokenExpired(token)) {
+                            UsernamePasswordAuthenticationToken authentication = 
+                                new UsernamePasswordAuthenticationToken(
+                                    username, 
+                                    null, 
+                                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                                );
+                            
+                            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                        }
                     }
+                } catch (Exception e) {
+                    logger.error("JWT Token validation failed", e);
                 }
-            } catch (Exception e) {
-                logger.error("JWT Token validation failed", e);
             }
         }
         
