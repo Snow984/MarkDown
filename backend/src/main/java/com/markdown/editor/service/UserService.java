@@ -28,7 +28,7 @@ public class UserService {
     }
     
     @Transactional
-    public void register(RegisterRequest request) {
+    public LoginResponse register(RegisterRequest request) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, request.getUsername())
                 .or()
@@ -46,6 +46,11 @@ public class UserService {
         user.setStatus(1);
         
         userRepository.insert(user);
+        
+        String token = jwtUtil.generateToken(user.getUsername());
+        UserDTO userDTO = convertToDTO(user);
+        
+        return new LoginResponse(token, userDTO);
     }
     
     public LoginResponse login(LoginRequest request) {

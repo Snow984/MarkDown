@@ -19,9 +19,9 @@ public class AuthController {
     }
     
     @PostMapping("/register")
-    public Result<Void> register(@Valid @RequestBody RegisterRequest request) {
-        userService.register(request);
-        return Result.success("注册成功", null);
+    public Result<LoginResponse> register(@Valid @RequestBody RegisterRequest request) {
+        LoginResponse response = userService.register(request);
+        return Result.success("注册成功", response);
     }
     
     @PostMapping("/login")
