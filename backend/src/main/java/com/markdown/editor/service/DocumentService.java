@@ -136,6 +136,19 @@ public class DocumentService {
         documentRepository.deleteById(documentId);
     }
     
+    public Document getDocumentEntity(Long documentId, Long userId) {
+        Document document = documentRepository.selectById(documentId);
+        if (document == null) {
+            throw new RuntimeException("文档不存在");
+        }
+        
+        if (!document.getUserId().equals(userId)) {
+            throw new RuntimeException("没有权限访问此文档");
+        }
+        
+        return document;
+    }
+    
     private DocumentDTO convertToDTO(Document document, String content, String htmlContent) {
         DocumentDTO dto = new DocumentDTO();
         BeanUtils.copyProperties(document, dto);

@@ -142,4 +142,52 @@ public class DocumentController {
         documentDraftService.deleteDraft(documentId, userId);
         return Result.success("删除草稿成功", null);
     }
+    
+    @GetMapping("/{id}/content")
+    public Result<com.markdown.editor.dto.DocumentContentDTO> getDocumentContent(@PathVariable Long id) {
+        Long userId = securityUtil.getCurrentUserId();
+        com.markdown.editor.entity.Document document = documentService.getDocumentEntity(id, userId);
+        com.markdown.editor.entity.DocumentContent content = documentContentService.getContent(id);
+        
+        com.markdown.editor.dto.DocumentContentDTO dto = new com.markdown.editor.dto.DocumentContentDTO();
+        dto.setId(content.getId());
+        dto.setDocumentId(content.getDocumentId());
+        dto.setContent(content.getContent());
+        dto.setHtmlContent(content.getHtmlContent());
+        dto.setCreatedAt(content.getCreatedAt());
+        dto.setUpdatedAt(content.getUpdatedAt());
+        
+        return Result.success("获取文档内容成功", dto);
+    }
+    
+    @PutMapping("/{id}/content")
+    public Result<com.markdown.editor.dto.DocumentContentDTO> saveDocumentContent(@PathVariable Long id, @RequestBody SaveDocumentContentRequest request) {
+        Long userId = securityUtil.getCurrentUserId();
+        com.markdown.editor.entity.Document document = documentService.getDocumentEntity(id, userId);
+        
+        documentContentService.updateContent(id, request.getContent(), "");
+        
+        com.markdown.editor.entity.DocumentContent content = documentContentService.getContent(id);
+        com.markdown.editor.dto.DocumentContentDTO dto = new com.markdown.editor.dto.DocumentContentDTO();
+        dto.setId(content.getId());
+        dto.setDocumentId(content.getDocumentId());
+        dto.setContent(content.getContent());
+        dto.setHtmlContent(content.getHtmlContent());
+        dto.setCreatedAt(content.getCreatedAt());
+        dto.setUpdatedAt(content.getUpdatedAt());
+        
+        return Result.success("保存文档内容成功", dto);
+    }
+    
+    public static class SaveDocumentContentRequest {
+        private String content;
+        
+        public String getContent() {
+            return content;
+        }
+        
+        public void setContent(String content) {
+            this.content = content;
+        }
+    }
 }

@@ -127,7 +127,7 @@ const documentsSlice = createSlice({
     },
     setCurrentContent: (state, action) => {
       if (state.currentContent) {
-        state.currentContent.content = action.payload
+        state.currentContent.content = action.payload.content
       }
     },
   },
